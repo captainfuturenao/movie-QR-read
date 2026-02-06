@@ -101,28 +101,36 @@
         const clickLayer = document.getElementById('click-layer');
         const mobileClickArea = document.getElementById('mobile-click-area');
 
-        overlay.addEventListener('click', () => {
-            // Try unmute
+        const startPlayback = async () => {
+            // 1. Try to play with sound (unmuted)
             video.muted = false;
 
-            video.play().then(() => {
+            try {
+                await video.play();
+                // Success
                 overlay.style.display = 'none';
-                // Show links only after successful play
                 clickLayer.style.display = 'block';
                 mobileClickArea.style.display = 'block';
-            }).catch(e => {
-                console.warn("Unmuted play failed, trying muted", e);
+            } catch (err) {
+                console.warn("Unmuted playback failed:", err);
+
+                // 2. If that fails (e.g. browser policy), try muted
                 video.muted = true;
-                video.play().then(() => {
+                try {
+                    await video.play();
+                    // Success (muted)
                     overlay.style.display = 'none';
                     clickLayer.style.display = 'block';
                     mobileClickArea.style.display = 'block';
-                    // Optional: alert user about mute if needed, but keeping it smooth is better
-                }).catch(e2 => {
-                    alert("Playback failed: " + e2.message);
-                });
-            });
-        });
+                    alert("音声をオンにするには、スマホの音量ボタン操作が必要です。");
+                } catch (err2) {
+                    console.error("Muted playback failed:", err2);
+                    alert("動画を再生できませんでした。\nエラー: " + err2.message);
+                }
+            }
+        };
+
+        overlay.addEventListener('click', startPlayback);
 
         // Ensure video loops
         video.addEventListener('ended', () => {
