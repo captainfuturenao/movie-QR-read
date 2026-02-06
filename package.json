@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "remotion preview src/index.ts",
-    "build": "remotion render src/index.ts MyComp out/video.mp4",
+    "build": "echo 'Skipping build on Vercel, using pre-rendered files'",
     "upgrade": "remotion upgrade",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
