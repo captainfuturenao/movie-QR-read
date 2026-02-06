@@ -102,31 +102,33 @@
         const mobileClickArea = document.getElementById('mobile-click-area');
 
         const startPlayback = async () => {
-            // 1. Try to play with sound (unmuted)
-            video.muted = false;
+            // STRATEGY: Play muted first (Safest), then try to unmute.
+            // Some devices throw "Not Supported" if you set muted=false on a paused video.
+
+            video.muted = true;
 
             try {
                 await video.play();
-                // Success
+
+                // Playback started! Now try to unmute.
+                try {
+                    video.muted = false;
+                    // If this doesn't throw, we have sound!
+                } catch (e) {
+                    console.warn("Could not unmute automatically:", e);
+                    alert("音声をオンにするには、スマホの音量ボタン操作が必要です。");
+                }
+
                 overlay.style.display = 'none';
                 clickLayer.style.display = 'block';
                 mobileClickArea.style.display = 'block';
-            } catch (err) {
-                console.warn("Unmuted playback failed:", err);
 
-                // 2. If that fails (e.g. browser policy), try muted
-                video.muted = true;
-                try {
-                    await video.play();
-                    // Success (muted)
-                    overlay.style.display = 'none';
-                    clickLayer.style.display = 'block';
-                    mobileClickArea.style.display = 'block';
-                    alert("音声をオンにするには、スマホの音量ボタン操作が必要です。");
-                } catch (err2) {
-                    console.error("Muted playback failed:", err2);
-                    alert("動画を再生できませんでした。\nエラー: " + err2.message);
-                }
+            } catch (err) {
+                console.error("Critical playback failure:", err);
+                alert("動画を再生できませんでした。\nエラー: " + err.message);
+                // Last resort: show controls so user can try manual play
+                video.controls = true;
+                overlay.style.display = 'none';
             }
         };
 
