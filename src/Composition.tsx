@@ -20,8 +20,8 @@ export const MyComposition: React.FC = () => {
             {/* Container for CTA and QR */}
             <div style={{
                 position: "absolute",
-                bottom: 50, // Moved up from 100 to 350
-                right: 50,
+                bottom: 150,
+                right: 300,
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",

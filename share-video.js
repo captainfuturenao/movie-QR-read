@@ -24,9 +24,8 @@ function getLocalIP() {
     return 'localhost';
 }
 
-const ip = getLocalIP();
-// URL points to the web page now, not the MP4
-const url = `http://${ip}:${PORT}/`;
+// URL now points to the Vercel app
+const url = `https://movie-qr-read.vercel.app/`;
 
 // Ensure existance
 if (!fs.existsSync(VIDEO_FILE)) {
