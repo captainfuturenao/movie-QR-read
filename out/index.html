@@ -20,6 +20,9 @@
             position: relative;
             height: 100%;
             aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         video {
@@ -27,119 +30,20 @@
             height: 100%;
             object-fit: contain;
         }
-
-        /* Clickable Link Areas - Initially Hidden */
-        #click-layer {
-            display: none;
-            /* Hidden until playing */
-            position: absolute;
-            bottom: 5%;
-            right: 3%;
-            width: 30%;
-            height: 30%;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        #mobile-click-area {
-            display: none;
-            /* Hidden until playing */
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 35%;
-            z-index: 5;
-        }
-
-        /* Play Button Overlay */
-        #start-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 20;
-            color: white;
-            cursor: pointer;
-        }
-
-        .play-icon {
-            font-size: 80px;
-            margin-bottom: 20px;
-        }
-
-        .instruction {
-            font-size: 18px;
-            font-weight: bold;
-        }
     </style>
 </head>
 
 <body>
     <div id="container">
-        <!-- Revert to no controls, rely on overlay -->
-        <video id="main-video" src="/video_mobile.mp4" playsinline preload="auto"></video>
-
-        <a href="https://forms.gle/xeP3LXCYDt4aotZU6" target="_blank" id="click-layer"></a>
-        <a href="https://forms.gle/xeP3LXCYDt4aotZU6" target="_blank" id="mobile-click-area"></a>
-
-        <div id="start-overlay">
-            <div class="play-icon">▶️</div>
-            <div class="instruction">タップして再生（音声あり）</div>
-        </div>
+        <!-- 
+            Robust Mobile Playback Config:
+            - controls: Essential for iOS/Android to allow user to start playback manually if autoplay fails.
+            - playsinline: Essential for iOS to play inline instead of fullscreen.
+            - preload="auto": Helps buffer metadata quickly.
+            - No autoplay: Not reliable on mobile with sound. User tap on 'controls' is best.
+        -->
+        <video id="main-video" src="/video_mobile.mp4" controls playsinline preload="auto"></video>
     </div>
-
-    <script>
-        const video = document.getElementById('main-video');
-        const overlay = document.getElementById('start-overlay');
-        const clickLayer = document.getElementById('click-layer');
-        const mobileClickArea = document.getElementById('mobile-click-area');
-
-        const startPlayback = async () => {
-            // STRATEGY: Play muted first (Safest), then try to unmute.
-            // Some devices throw "Not Supported" if you set muted=false on a paused video.
-
-            video.muted = true;
-
-            try {
-                await video.play();
-
-                // Playback started! Now try to unmute.
-                try {
-                    video.muted = false;
-                    // If this doesn't throw, we have sound!
-                } catch (e) {
-                    console.warn("Could not unmute automatically:", e);
-                    alert("音声をオンにするには、スマホの音量ボタン操作が必要です。");
-                }
-
-                overlay.style.display = 'none';
-                clickLayer.style.display = 'block';
-                mobileClickArea.style.display = 'block';
-
-            } catch (err) {
-                console.error("Critical playback failure:", err);
-                alert("動画を再生できませんでした。\nエラー: " + err.message);
-                // Last resort: show controls so user can try manual play
-                video.controls = true;
-                overlay.style.display = 'none';
-            }
-        };
-
-        overlay.addEventListener('click', startPlayback);
-
-        // Ensure video loops
-        video.addEventListener('ended', () => {
-            video.currentTime = 0;
-            video.play();
-        });
-    </script>
 </body>
 
 </html>
