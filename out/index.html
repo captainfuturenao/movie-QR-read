@@ -101,11 +101,22 @@
         const overlay = document.getElementById('start-overlay');
 
         overlay.addEventListener('click', () => {
+            // Try to unmute first since we have a user user gesture
+            video.muted = false;
+
             video.play().then(() => {
                 overlay.style.display = 'none';
             }).catch(e => {
-                console.error("Playback failed", e);
-                alert("再生できませんでした。");
+                console.warn("Unmuted playback failed, trying muted.", e);
+                // Fallback: iOS/Android might block unmuted playback even with gesture in some contexts
+                video.muted = true;
+                video.play().then(() => {
+                    overlay.style.display = 'none';
+                    alert("自動再生の制限によりミュートで再生を開始しました。手動で音量を上げてください。");
+                }).catch(e2 => {
+                    console.error("Playback failed", e2);
+                    alert("再生できませんでした: " + e2.message);
+                });
             });
         });
 
