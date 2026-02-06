@@ -51,7 +51,7 @@ export const MyComposition: React.FC = () => {
                     alignItems: "center",
                     boxShadow: "0 4px 10px rgba(0,0,0,0.3)"
                 }}>
-                    <QRCodeSVG value="https://forms.gle/xeP3LXCYDt4aotZU6" size={200} />
+                    <QRCodeSVG value="https://movie-qr-read.vercel.app" size={200} />
                     <p style={{ margin: "10px 0 0", fontSize: 24, fontWeight: "bold", fontFamily: "sans-serif", color: "black" }}>Scan Me</p>
                 </div>
             </div>
