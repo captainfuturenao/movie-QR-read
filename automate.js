@@ -28,36 +28,29 @@ if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir);
 fs.copyFileSync(sourceVideoPath, destVideoPath);
 console.log(`    Copied ${sourceVideoPath} to ${destVideoPath}`);
 
-// 2. Update Composition.tsx (QR Code & Video Source)
+// 2. Update Composition.tsx
 console.log("--> Updating Composition.tsx...");
 const compPath = path.join(srcDir, 'Composition.tsx');
 let compContent = fs.readFileSync(compPath, 'utf8');
-
-// Replace Video Source
 compContent = compContent.replace(/src={staticFile\(".*?"\)}/g, `src={staticFile("${standardVideoName}")}`);
-// Replace QR URL (Assuming QRCodeSVG value prop)
 compContent = compContent.replace(/value="https?:\/\/[^"]+"/g, `value="${targetUrl}"`);
-
 fs.writeFileSync(compPath, compContent);
 
-// 3. Update Root.tsx (Duration)
+// 3. Update Root.tsx
 console.log("--> Updating Root.tsx...");
 const rootPath = path.join(srcDir, 'Root.tsx');
 let rootContent = fs.readFileSync(rootPath, 'utf8');
-const frames = durationSec * 30; // 30 fps
+const frames = durationSec * 30;
 rootContent = rootContent.replace(/durationInFrames={\d+}/, `durationInFrames={${frames}}`);
 fs.writeFileSync(rootPath, rootContent);
 
-// 4. Update index.html (Overlay Link)
+// 4. Update index.html
 console.log("--> Updating output HTML...");
 const htmlPath = path.join(outDir, 'index.html');
 if (fs.existsSync(htmlPath)) {
     let htmlContent = fs.readFileSync(htmlPath, 'utf8');
-    // Replace hrefs
     htmlContent = htmlContent.replace(/href="https?:\/\/[^"]+"/g, `href="${targetUrl}"`);
     fs.writeFileSync(htmlPath, htmlContent);
-} else {
-    console.error("    Warning: index.html not found, skipping link update.");
 }
 
 // 5. Build Video
@@ -69,7 +62,23 @@ try {
     process.exit(1);
 }
 
-// 6. Start Server
-console.log("--> Starting server...");
+// 6. Upload to Cloud (Git Push)
+console.log("--> Uploading to Cloud (GitHub/Vercel)...");
+try {
+    execSync(`git add .`, { stdio: 'inherit', cwd: projectDir });
+    try {
+        execSync(`git commit -m "Update video: ${new Date().toISOString()}"`, { stdio: 'inherit', cwd: projectDir });
+    } catch (e) {
+        console.log("    (Nothing to commit)");
+    }
+    execSync(`git push`, { stdio: 'inherit', cwd: projectDir });
+    console.log("--> Upload Complete!");
+    console.log("    Your changes will be live on Vercel in a few minutes.");
+} catch (e) {
+    console.error("Upload failed. You may need to run 'git push' manually.");
+}
+
+// 7. Start Local Server
+console.log("--> Starting local server for check...");
 console.log("    Press Ctrl+C to stop.");
 require('./share-video.js');

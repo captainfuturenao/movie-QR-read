@@ -9,18 +9,18 @@ export const MyComposition: React.FC = () => {
     return (
         <AbsoluteFill style={{ backgroundColor: "black" }}>
             <Video
-                src={staticFile("IMG_3887.MOV")}
+                src={staticFile("input_video.mp4")}
                 style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "cover"
+                    objectFit: "contain"
                 }}
             />
 
             {/* Container for CTA and QR */}
             <div style={{
                 position: "absolute",
-                bottom: 350, // Moved up from 100 to 350
+                bottom: 50, // Moved up from 100 to 350
                 right: 50,
                 display: "flex",
                 flexDirection: "row",
@@ -51,7 +51,7 @@ export const MyComposition: React.FC = () => {
                     alignItems: "center",
                     boxShadow: "0 4px 10px rgba(0,0,0,0.3)"
                 }}>
-                    <QRCodeSVG value="https://forms.gle/P3MU4zHwXGtaE6im7" size={200} />
+                    <QRCodeSVG value="https://forms.gle/xeP3LXCYDt4aotZU6" size={200} />
                     <p style={{ margin: "10px 0 0", fontSize: 24, fontWeight: "bold", fontFamily: "sans-serif", color: "black" }}>Scan Me</p>
                 </div>
             </div>
