@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player</title>
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+
+        #container {
+            position: relative;
+            height: 100%;
+            aspect-ratio: 9/16;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Clickable Link Areas */
+        /* Updated position to match new video layout (bottom 350px on 1920) */
+        #click-layer {
+            position: absolute;
+            bottom: 18%;
+            /* Approx 350px / 1920px */
+            right: 4.6%;
+            width: 60%;
+            /* Wider to cover text + QR */
+            height: 15%;
+            cursor: pointer;
+            z-index: 10;
+            /* background: rgba(255, 0, 0, 0.3); /* Debugging */
+        }
+
+        #mobile-click-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35%;
+            /* Increased height to be sure */
+            z-index: 5;
+        }
+
+        /* Play Button Overlay */
+        #start-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            color: white;
+            cursor: pointer;
+        }
+
+        .play-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .instruction {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <!-- Removed 'muted' and 'autoplay' to allow audio with user interaction -->
+        <video id="main-video" src="/video.mp4" playsinline></video>
+
+        <a href="https://forms.gle/P3MU4zHwXGtaE6im7" target="_blank" id="click-layer"></a>
+        <a href="https://forms.gle/P3MU4zHwXGtaE6im7" target="_blank" id="mobile-click-area"></a>
+
+        <div id="start-overlay">
+            <div class="play-icon">▶️</div>
+            <div class="instruction">タップして再生（音声あり）</div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('main-video');
+        const overlay = document.getElementById('start-overlay');
+
+        overlay.addEventListener('click', () => {
+            video.play().then(() => {
+                overlay.style.display = 'none';
+            }).catch(e => {
+                console.error("Playback failed", e);
+                alert("再生できませんでした。");
+            });
+        });
+
+        // Ensure video loops
+        video.addEventListener('ended', () => {
+            video.currentTime = 0;
+            video.play();
+        });
+    </script>
+</body>
+
+</html>
