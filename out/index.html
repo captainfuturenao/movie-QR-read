@@ -25,6 +25,31 @@
             justify-content: center;
         }
 
+        /* Clickable Link Area for QR Code */
+        #click-layer {
+            display: none;
+            /* Hidden strictly until playing */
+            position: absolute;
+            /*
+               Calculated based on 1920x1080 video:
+               QR Container is at Right: 300px, Bottom: 150px.
+               QR box size is approx 240px x 240px.
+
+               Right: 300 / 1920 = ~15.6%
+               Bottom: 150 / 1080 = ~13.8%
+               Width: 250 / 1920 = ~13%
+               Height: 250 / 1080 = ~23%
+            */
+            right: 15.6%;
+            bottom: 13.8%;
+            width: 13%;
+            height: 23%;
+            z-index: 10;
+            cursor: pointer;
+            /* Debugging: Un-comment to see the hit box */
+            /* background: rgba(255, 0, 0, 0.3); */
+        }
+
         video {
             width: 100%;
             height: 100%;
@@ -35,7 +60,7 @@
 
 <body>
     <div id="container">
-        <!-- 
+        <!--
             Robust Mobile Playback Config:
             - controls: Essential for iOS/Android to allow user to start playback manually if autoplay fails.
             - playsinline: Essential for iOS to play inline instead of fullscreen.
@@ -43,6 +68,32 @@
             - No autoplay: Not reliable on mobile with sound. User tap on 'controls' is best.
         -->
         <video id="main-video" src="/video_mobile.mp4" controls playsinline preload="auto"></video>
+
+        <!-- The invisible link button over the QR code -->
+        <a href="https://forms.gle/xeP3LXCYDt4aotZU6" target="_blank" id="click-layer"></a>
+    </div>
+
+    <script>
+        const video = document.getElementById('main-video');
+        const clickLayer = document.getElementById('click-layer');
+
+        // Only show the clickable link when video is actually playing.
+        // This prevents the link from blocking the native Play button before start.
+        video.addEventListener('play', () => {
+            clickLayer.style.display = 'block';
+        });
+
+        video.addEventListener('pause', () => {
+            // Optional: Hide it on pause so user can use controls easily? 
+            // But usually we want them to click even if paused.
+            // Let's keep it visible if they paused, assuming they saw the QR.
+            clickLayer.style.display = 'block';
+        });
+
+        video.addEventListener('ended', () => {
+            clickLayer.style.display = 'block';
+        });
+    </script>
     </div>
 </body>
 
