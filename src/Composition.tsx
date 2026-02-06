@@ -20,39 +20,40 @@ export const MyComposition: React.FC = () => {
             {/* Container for CTA and QR */}
             <div style={{
                 position: "absolute",
-                bottom: 150,
-                right: 300,
+                bottom: 350,
+                right: 50,
                 display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 20
+                flexDirection: "column", // Stack vertically for mobile
+                alignItems: "flex-end", // Align to right
+                gap: 15
             }}>
                 {/* CTA Text */}
                 <div style={{
                     color: "white",
-                    fontSize: 50,
+                    fontSize: 32, // Reduced from 50
                     fontWeight: "bold",
                     fontFamily: "sans-serif",
-                    textShadow: "0 4px 8px rgba(0,0,0,0.8)",
+                    textShadow: "0 2px 4px rgba(0,0,0,0.8)",
                     backgroundColor: "rgba(0,0,0,0.5)",
-                    padding: "10px 20px",
-                    borderRadius: 10,
+                    padding: "8px 16px",
+                    borderRadius: 8,
+                    marginBottom: 10,
                 }}>
-                    こちらをタップ👉
+                    👈 こちらをタップ
                 </div>
 
                 {/* QR Code Box */}
                 <div style={{
-                    padding: 20,
+                    padding: 10,
                     backgroundColor: "white",
-                    borderRadius: 15,
+                    borderRadius: 12,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     boxShadow: "0 4px 10px rgba(0,0,0,0.3)"
                 }}>
-                    <QRCodeSVG value="https://movie-qr-read.vercel.app" size={200} />
-                    <p style={{ margin: "10px 0 0", fontSize: 24, fontWeight: "bold", fontFamily: "sans-serif", color: "black" }}>Scan Me</p>
+                    <QRCodeSVG value="https://movie-qr-read.vercel.app" size={120} /> {/* Reduced from 200 */}
+                    <p style={{ margin: "5px 0 0", fontSize: 14, fontWeight: "bold", fontFamily: "sans-serif", color: "black" }}>Scan Me</p>
                 </div>
             </div>
         </AbsoluteFill>
